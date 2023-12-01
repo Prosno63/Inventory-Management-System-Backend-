@@ -33,7 +33,7 @@ async function run() {
 
 
 
-        //............1. (Create Product)...........................................................
+        //............1. (Create Product).............................................
 
         app.post('/api/products', async (req, res) => {
             const newProduct = req.body;
@@ -62,7 +62,7 @@ async function run() {
         });
 
 
-        //...........3. Fetch Product by ID.........
+        //...........3. Fetch Product by ID..........................................
 
         app.get('/api/products/:id', async (req, res) => {
             const id = req.params.id;
@@ -76,7 +76,7 @@ async function run() {
         });
 
 
-        //..........4. Update Product...................
+        //..........4. Update Product...............................................
 
         app.put('/api/products/:id', async (req, res) => {
             const id = req.params.id;
@@ -104,7 +104,7 @@ async function run() {
 
 
 
-        //................5. Delete Product...................
+        //................5. Delete Product........................................
 
         app.delete('/api/products/:id', async (req, res) => {
             const id = req.params.id;
