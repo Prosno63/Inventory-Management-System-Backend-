@@ -32,28 +32,51 @@ async function run() {
         const productCollection = client.db("InventoryManagementDB").collection("products");
 
 
-        //............To Show All the Products to the users............
+
+        //............1. (Create Product)...........................................................
+
+        app.post('/api/products', async (req, res) => {
+            const newProduct = req.body;
+            //console.log(newCoffee);
+            const result = await productCollection.insertOne(newProduct);
+            if (result.acknowledged) {
+                res.status(201).send(result);
+            } else {
+                res.status(500).send('Unable to create product');
+            }
+        });
+
+
+        //...........2. Fetch Products................................................
 
         app.get('/api/products', async (req, res) => {
 
             const cursor = productCollection.find();
             const result = await cursor.toArray();
-            res.send(result);
+            if (result.length > 0) {
+                res.status(200).send(result);
+            } else {
+                res.status(404).send('No products found');
+            }
 
         });
 
 
-        //...........To View One clicked Products to the users.........
+        //...........3. Fetch Product by ID.........
 
         app.get('/api/products/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: id }
             const result = await productCollection.findOne(query);
-            res.send(result);
+            if (result) {
+                res.status(200).send(result);
+            } else {
+                res.status(404).send('Product not found');
+            }
         });
 
 
-        //..........To update any specific product info..............
+        //..........4. Update Product...................
 
         app.put('/api/products/:id', async (req, res) => {
             const id = req.params.id;
@@ -70,24 +93,28 @@ async function run() {
                 }
             }
             const result = await productCollection.updateOne(filter, Product, options);
-            res.send(result)
+            if (result.modifiedCount) {
+                res.status(200).send(result);
+            } else if (result.upsertedCount) {
+                res.status(201).send(result);
+            } else {
+                res.status(404).send('Product not found');
+            }
         });
 
-        //ADD new products...........................................................
-        app.post('/api/products', async (req, res) => {
-            const newProduct = req.body;
-            //console.log(newCoffee);
-            const result = await productCollection.insertOne(newProduct);
-            res.send(result);
-        });
 
-        //................Delete One Item...................
+
+        //................5. Delete Product...................
 
         app.delete('/api/products/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { _id: id}
+            const query = { _id: id }
             const result = await productCollection.deleteOne(query);
-            res.send(result);
+            if (result.deletedCount) {
+                res.status(204).send('Product deleted successfully');
+            } else {
+                res.status(404).send('Product not found');
+            }
         });
 
 
