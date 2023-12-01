@@ -37,7 +37,6 @@ async function run() {
 
         app.post('/api/products', async (req, res) => {
             const newProduct = req.body;
-            //console.log(newCoffee);
             const result = await productCollection.insertOne(newProduct);
             if (result.acknowledged) {
                 res.status(201).send(result);
@@ -45,6 +44,7 @@ async function run() {
                 res.status(500).send('Unable to create product');
             }
         });
+
 
 
         //...........2. Fetch Products................................................
